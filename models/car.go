@@ -62,3 +62,38 @@ func validateBrand(brand string) error {
 	}
 	return nil
 }
+
+func validateFuelType(FuelType string) error {
+	validateFuelTypes := []string{"Petrol", "Diesel", "Electric", "Hybrid"}
+	for _, validType := range validateFuelTypes {
+		if FuelType == validType {
+			return nil
+		}
+	}
+	return errors.New("Fuel type must be Petrol, Diesel, Electric or Hybrid")
+}
+
+func validateEngine(engine Engine) error {
+	if engine.EngineID == uuid.Nil {
+		return errors.New("EngineID is Required")
+	}
+	if engine.Displacement <= 0 {
+		return errors.New("displacement must be greater than zero")
+	}
+	if engine.noOfCylinders <= 0 {
+		return errors.New("No of Cylinders must be greater than zero")
+	}
+	if engine.CarRange <= 0 {
+		return errors.New("Car Range must be greater than zero")
+	}
+
+	return nil
+}
+
+func validatePrice(price float64) error {
+	if price <= 0 {
+		return errors.New("Price must be greater than zero")
+	}
+
+	return nil
+}
