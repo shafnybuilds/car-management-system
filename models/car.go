@@ -56,3 +56,9 @@ func validateYear(year string) error {
 	return nil
 }
 
+func validateBrand(brand string) error {
+	if brand == "" {
+		return errors.New("Brand is Required")
+	}
+	return nil
+}
