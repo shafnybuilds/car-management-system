@@ -30,6 +30,30 @@ type CarRequest struct {
 	Price    float64 `json: "price"`
 }
 
+// parent validation func
+func ValidationRequest(carReq CarRequest) error {
+	if err := validateName(carReq.Name); err != nil {
+		return err
+	}
+	if err := validateYear(carReq.Year); err != nil {
+		return err
+	}
+	if err := validateBrand(carReq.Brand); err != nil {
+		return err
+	}
+	if err := validateFuelType(carReq.FuelType); err != nil {
+		return err
+	}
+	if err := validateEngine(carReq.Engine); err != nil {
+		return err
+	}
+	if err := validatePrice(carReq.Price); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // validation functions for the car
 func validateName(name string) error {
 	if name == "" {
@@ -80,7 +104,7 @@ func validateEngine(engine Engine) error {
 	if engine.Displacement <= 0 {
 		return errors.New("displacement must be greater than zero")
 	}
-	if engine.noOfCylinders <= 0 {
+	if engine.NoOfCylinders <= 0 {
 		return errors.New("No of Cylinders must be greater than zero")
 	}
 	if engine.CarRange <= 0 {
