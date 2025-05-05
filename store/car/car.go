@@ -237,7 +237,7 @@ func (s Store) UpdateCar(ctx context.Context, id string, carReq *models.CarReque
 	return updatedCar, err
 }
 
-func (s Store) DeleteCar(ctx context.Context, id string, carReq *models.Engine) (models.Car, error) {
+func (s Store) DeleteCar(ctx context.Context, id string) (models.Car, error) {
 	var deletedCar models.Car
 
 	tx, err := s.db.BeginTx(ctx, nil)
@@ -273,7 +273,7 @@ func (s Store) DeleteCar(ctx context.Context, id string, carReq *models.Engine) 
 		return models.Car{}, err
 	}
 	if rowsAffected == 0 {
-		errors.New("No rows were deleted!")
+		return models.Car{}, errors.New("No rows were deleted!")
 	}
 
 	return deletedCar, nil

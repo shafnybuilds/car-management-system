@@ -15,5 +15,5 @@ type CarStoreInterface interface {
 
 	UpdateCar(ctx context.Context, id string, carReq *models.CarRequest) (models.Car, error)
 
-	DeleteCar(ctx context.Context, id string, carReq *models.Engine) (models.Car, error)
+	DeleteCar(ctx context.Context, id string) (models.Car, error)
 }
