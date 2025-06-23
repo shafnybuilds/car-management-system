@@ -12,12 +12,14 @@ type CarService struct {
 	store store.CarStoreInterface
 }
 
+// constructor
 func NewCarService(store store.CarStoreInterface) *CarService {
 	return &CarService{
 		store: store,
 	}
 }
 
+// methods
 func (s *CarService) GetCarByID(ctx context.Context, id string) (*models.Car, error) {
 	car, err := s.store.GetCarById(ctx, id)
 	if err != nil {

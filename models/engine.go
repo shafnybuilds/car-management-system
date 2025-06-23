@@ -20,7 +20,7 @@ type EngineRequest struct {
 }
 
 // parent validation func
-func validateEngineRequest(EngReq EngineRequest) error {
+func ValidateEngineRequest(EngReq EngineRequest) error {
 	if err := validateDisplacement(EngReq.Displacement); err != nil {
 		return err
 	}
