@@ -15,7 +15,7 @@ type Store struct {
 }
 
 // constructor function for creating a new instance
-func new(db *sql.DB) Store {
+func New(db *sql.DB) Store {
 	return Store{db: db}
 }
 
@@ -258,7 +258,7 @@ func (s Store) DeleteCar(ctx context.Context, id string) (models.Car, error) {
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return models.Car{}, errors.New("Car is not found")
+			return models.Car{}, errors.New("car is not found")
 		}
 		return models.Car{}, err
 	}
@@ -273,7 +273,7 @@ func (s Store) DeleteCar(ctx context.Context, id string) (models.Car, error) {
 		return models.Car{}, err
 	}
 	if rowsAffected == 0 {
-		return models.Car{}, errors.New("No rows were deleted!")
+		return models.Car{}, errors.New("no rows were deleted")
 	}
 
 	return deletedCar, nil

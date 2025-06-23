@@ -51,12 +51,12 @@ func (h *CarHandler) GetCarByID(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *CarHandler) GetCarByBrand(w http.ResponseWriter, r *http.Request) {
+func (h *CarHandler) GetCarsByBrand(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	brand := r.URL.Query().Get("brand")
 	isEngine := r.URL.Query().Get("isEngine") == "true"
 
-	resp, err := h.service.GetCarByBrand(ctx, brand, isEngine)
+	resp, err := h.service.GetCarsByBrand(ctx, brand, isEngine)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Println("Error: ", err)

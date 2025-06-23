@@ -55,7 +55,7 @@ func (s *EngineService) UpdateEngine(ctx context.Context, id string, engineReq *
 
 }
 
-func (s *EngineService) DeleteEngine(ctx context.Context, id string, engineReq *models.EngineRequest) (*models.Engine, error) {
+func (s *EngineService) DeleteEngine(ctx context.Context, id string) (*models.Engine, error) {
 	deletedEngine, err := s.store.DeleteEngine(ctx, id)
 	if err != nil {
 		return nil, err
