@@ -44,7 +44,7 @@ func (h *CarHandler) GetCarByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	// response body
+	// write response body
 	_, err = w.Write(body)
 	if err != nil {
 		log.Println("Error Writing Response : ", err)
@@ -93,7 +93,7 @@ func (h *CarHandler) CreateCar(w http.ResponseWriter, r *http.Request) {
 	var carReq models.CarRequest
 	err = json.Unmarshal(body, &carReq)
 	if err != nil {
-		log.Println("Error while Unmarshalling Request body", err)
+		log.Println("Error while Unmarshalling Car Request body", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -107,8 +107,8 @@ func (h *CarHandler) CreateCar(w http.ResponseWriter, r *http.Request) {
 
 	responseBody, err := json.Marshal(createdCar)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
 		log.Println("Error while marshaling: ", err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
@@ -134,14 +134,14 @@ func (h *CarHandler) UpdateCar(w http.ResponseWriter, r *http.Request) {
 	var carReq models.CarRequest
 	err = json.Unmarshal(body, &carReq)
 	if err != nil {
-		log.Println("Error while Unmarshalling Request body", err)
+		log.Println("Error while Unmarshalling Request body: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	updatedCar, err := h.service.UpdateCar(ctx, id, &carReq)
 	if err != nil {
-		log.Println("Error While Upadating the Car: ", err)
+		log.Println("Error While Updating the Car: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -185,6 +185,6 @@ func (h *CarHandler) DeleteCar(w http.ResponseWriter, r *http.Request) {
 	// write the response body
 	_, err = w.Write(body)
 	if err != nil {
-		log.Println("Error Writing Response", err)
+		log.Println("Error Writing Response: ", err)
 	}
 }
