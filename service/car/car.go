@@ -54,7 +54,7 @@ func (s *CarService) UpdateCar(ctx context.Context, id string, carReq *models.Ca
 		return nil, err
 	}
 
-	updatedCar, err := s.store.UpdateCar(ctx, id, *&carReq)
+	updatedCar, err := s.store.UpdateCar(ctx, id, carReq)
 	if err != nil {
 		return nil, err
 	}
