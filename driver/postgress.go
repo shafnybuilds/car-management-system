@@ -24,7 +24,8 @@ func InitDB() {
 	fmt.Println("Waiting for DataBase Spin...")
 	time.Sleep(time.Second * 5)
 
-	db, err := sql.Open("postgres", connStr)
+	var err error
+	db, err = sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatalf("Error Opening Connection With DataBase: %v", err)
 	}
