@@ -22,24 +22,7 @@ func New(db *sql.DB) *EngineStore {
 func (e EngineStore) GetEngineById(ctx context.Context, id string) (models.Engine, error) {
 	var engine models.Engine
 
-	tx, err := e.db.BeginTx(ctx, nil)
-	if err != nil {
-		return engine, err
-	}
-
-	defer func() {
-		if err != nil {
-			if rbErr := tx.Rollback(); rbErr != nil {
-				fmt.Printf("Transaction rollback error: %v", rbErr)
-			}
-		} else {
-			if cmErr := tx.Commit(); cmErr != nil {
-				fmt.Printf("Transaction commit error: %v", cmErr)
-			}
-		}
-	}()
-
-	err = tx.QueryRowContext(ctx, "SELECT id, displacement, no_of_cylinders, car_range FROM engine WHERE id=$1", id).Scan(
+	err := e.db.QueryRowContext(ctx, "SELECT id, displacement, no_of_cylinders, car_range FROM engine WHERE id=$1", id).Scan(
 		&engine.EngineID,
 		&engine.Displacement,
 		&engine.NoOfCylinders,
@@ -57,27 +40,9 @@ func (e EngineStore) GetEngineById(ctx context.Context, id string) (models.Engin
 
 func (e EngineStore) EngineCreate(ctx context.Context, engineReq *models.EngineRequest) (models.Engine, error) {
 
-	tx, err := e.db.BeginTx(ctx, nil)
-
-	if err != nil {
-		return models.Engine{}, err
-	}
-
-	defer func() {
-		if err != nil {
-			if rbErr := tx.Rollback(); rbErr != nil {
-				fmt.Printf("Transaction rollback error: %v", rbErr)
-			}
-		} else {
-			if cmErr := tx.Commit(); cmErr != nil {
-				fmt.Printf("Transaction commit error: %v", cmErr)
-			}
-		}
-	}()
-
 	engineID := uuid.New()
 
-	_, err = tx.ExecContext(ctx,
+	_, err := e.db.ExecContext(ctx,
 		"INSERT INTO engine (id, displacement, no_of_cylinders, car_range) VALUES ($1, $2, $3, $4)",
 		engineID, engineReq.Displacement, engineReq.NoOfCylinders, engineReq.CarRange)
 
@@ -103,25 +68,7 @@ func (e EngineStore) EngineUpdate(ctx context.Context, id string, engineReq *mod
 		return models.Engine{}, fmt.Errorf("Invalied Engine ID: %w", err)
 	}
 
-	tx, err := e.db.BeginTx(ctx, nil)
-
-	if err != nil {
-		return models.Engine{}, err
-	}
-
-	defer func() {
-		if err != nil {
-			if rbErr := tx.Rollback(); rbErr != nil {
-				fmt.Printf("Transaction rollback error: %v", rbErr)
-			}
-		} else {
-			if cmErr := tx.Commit(); cmErr != nil {
-				fmt.Printf("Transaction commit error: %v", cmErr)
-			}
-		}
-	}()
-
-	result, err := tx.ExecContext(ctx,
+	result, err := e.db.ExecContext(ctx,
 		"UPDATE engine SET displacement = $1, no_of_cylinders = $2, car_range = $3 WHERE id = $4", engineReq.Displacement, engineReq.NoOfCylinders, engineReq.CarRange, engineID)
 
 	if err != nil {
@@ -148,52 +95,12 @@ func (e EngineStore) EngineUpdate(ctx context.Context, id string, engineReq *mod
 }
 
 func (e EngineStore) DeleteEngine(ctx context.Context, id string) (models.Engine, error) {
-
 	var engine models.Engine
-
-	tx, err := e.db.BeginTx(ctx, nil)
-
-	if err != nil {
-		return models.Engine{}, err
-	}
-
-	defer func() {
-		if err != nil {
-			if rbErr := tx.Rollback(); rbErr != nil {
-				fmt.Printf("Transaction rollback error: %v", rbErr)
-			}
-		} else {
-			if cmErr := tx.Commit(); cmErr != nil {
-				fmt.Printf("Transaction commit error: %v", cmErr)
-			}
-		}
-	}()
-
-	err = tx.QueryRowContext(ctx, "SELECT id, displacement, no_of_cylinders, car_range FROM engine WHERE id=$1", id).Scan(
-		&engine.EngineID,
-		&engine.Displacement,
-		&engine.NoOfCylinders,
-		&engine.CarRange,
+	err := e.db.QueryRowContext(ctx, "DELETE FROM engine WHERE id = $1 RETURNING id, displacement, no_of_cylinders, car_range", id).Scan(
+		&engine.EngineID, &engine.Displacement, &engine.NoOfCylinders, &engine.CarRange,
 	)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return engine, nil
-		}
-		return engine, err
+	if errors.Is(err, sql.ErrNoRows) {
+		return engine, nil
 	}
-
-	result, err := tx.ExecContext(ctx, "DELETE FROM engine WHERE id = $1", id)
-	if err != nil {
-		return models.Engine{}, nil
-	}
-
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return models.Engine{}, err
-	}
-	if rowsAffected == 0 {
-		return models.Engine{}, errors.New("Zero rows were deleted!")
-	}
-
-	return engine, nil
+	return engine, err
 }
