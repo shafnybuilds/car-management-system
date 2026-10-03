@@ -58,7 +58,7 @@ func main() {
 	// router
 	router := mux.NewRouter()
 
-	// excuting schema file to populate the DB with dummy data
+	// Initialize missing tables without resetting existing data.
 	schemaFile := "store/schema.sql"
 	if err := executeSchemaFile(db, schemaFile); err != nil {
 		log.Fatal("Error while executing the schema file: ", err)
