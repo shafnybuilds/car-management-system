@@ -176,7 +176,7 @@ func (s Store) UpdateCar(ctx context.Context, id string, carReq *models.CarReque
 
 	query := `
 		UPDATE car
-		SET name = $2, year = $3, fuel_type = $5, engine_id = $6, price = $7, updated_at = $8
+		SET name = $2, year = $3, brand = $4, fuel_type = $5, engine_id = $6, price = $7, updated_at = $8
 		WHERE id = $1
 		RETURNING id, name, year, brand, fuel_type, engine_id, price, created_at, updated_at  
 	`
